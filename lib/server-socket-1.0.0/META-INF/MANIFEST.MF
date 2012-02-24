@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Built-By: sonian
-Created-By: Leiningen 1.6.2-SNAPSHOT
-
