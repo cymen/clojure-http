@@ -48,8 +48,14 @@
             (copy (input-stream filename) *out*)
             (flush)))
       (if (-> filename File. .isDirectory)
-        (doseq [file (-> filename File. .listFiles)]
-          (println (make-directory-index-listing file)))
+        (do
+          (println (:HTTP-Version request-headers) "200 OK")
+          (println "Content-Type: text/html")
+          (println "")
+          (println "<html><body>")
+          (doseq [file (-> filename File. .listFiles)]
+            (println (make-directory-index-listing file)))
+          (println "</body></html>"))
         (do
           (println "should be a 404 on GET" (:Request-URI request-headers)
           (flush)))))))
