@@ -1,5 +1,6 @@
 (ns clojure-http.core)
 (import '[java.io File])
+(import '[java.net URLDecoder])
 (use '[clojure.contrib.server-socket :only(create-server)])
 (use '[clojure.contrib.io :only (copy input-stream reader writer)])
 (use '[clojure.string :only (split)])
@@ -22,6 +23,27 @@
   (merge
     (zipmap [:Method, :Request-URI, :HTTP-Version] (split (first request-headers-lines) #"\s+"))
     (reduce parse-key-value-into {} (rest request-headers-lines))))
+
+(defn XXparse-request-body [request-headers]
+  (loop [c (.read *in*) acc []]
+    (do
+      (if (not (.ready *in*))
+        acc
+        (recur (.read *in*) (conj acc c))))))
+
+(defn char-seq [in]
+  (map char
+    (take-while
+      (partial not= -1)
+        (repeatedly #(.read in)))))
+
+
+(defn parse-request-body [request-headers]
+  (if (contains? request-headers :Content-Length)
+    (URLDecoder/decode
+      (apply str
+        (take (#(Integer/parseInt (:Content-Length request-headers)))
+          (char-seq *in*))))))
 
 (defmulti response
   (fn [request-headers *out*] (:Method request-headers)))
@@ -67,8 +89,10 @@
   (println "HEAD!"))
 
 (defmethod response "POST" [request-headers *out*]
-  (doseq [keyval request-headers]
-    (println (key keyval) (val keyval))))
+  (do
+    (doseq [keyval request-headers]
+      (println (key keyval) (val keyval)))
+    (println (parse-request-body request-headers))))
 
 (defn http-server []
   (letfn [(http [in out]
