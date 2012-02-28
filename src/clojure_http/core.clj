@@ -14,18 +14,30 @@
   (let [pair (rest (re-matches #"([^:]+): (.+)" line))]
     (assoc collection (keyword (first pair)) (second pair))))
 
-(defn parse-request [request-lines]
+(defn parse-request-headers [request-headers-lines]
   (merge
-    (zipmap [:Method, :Request-URI, :HTTP-Version] (split (first request-lines) #"\s+"))
-    (reduce parse-key-value-into {} (rest request-lines))))
+    (zipmap [:Method, :Request-URI, :HTTP-Version] (split (first request-headers-lines) #"\s+"))
+    (reduce parse-key-value-into {} (rest request-headers-lines))))
+
+(defmulti response
+  (fn [request-headers] (:Method request-headers)))
+
+(defmethod response "GET" [request-headers]
+  (println "GET!"))
+
+(defmethod response "HEAD" [request-headers]
+  (println "HEAD!"))
+
+(defmethod response "POST" [request-headers]
+  (println "POST!"))
 
 (defn http-server []
   (letfn [(http [in out]
                     (binding [*in* (BufferedReader. (InputStreamReader. in))
                               *out* (OutputStreamWriter. out)]
-                        (let [request
-                          (parse-request (read-until-empty))]
-                          (println (:Method request))
+                        (let [request-headers
+                          (parse-request-headers (read-until-empty))]
+                          (response request-headers)
                         )
                     ))]
     (create-server 5000 http)))
