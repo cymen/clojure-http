@@ -1,9 +1,9 @@
 (ns clojure-http.core)
-(import '[java.io BufferedInputStream BufferedReader File FileInputStream FileReader InputStreamReader OutputStreamWriter])
-(use 'clojure.contrib.server-socket)
-(use 'clojure.contrib.io)
-(use 'clojure.string)
-(use 'pantomime.core)
+(import '[java.io File])
+(use '[clojure.contrib.server-socket :only(create-server)])
+(use '[clojure.contrib.io :only (copy input-stream reader writer)])
+(use '[clojure.string :only (split)])
+(use '[pantomime.mime :only (mime-type-of)])
 
 (def port 5000)
 (def root "webroot")
@@ -38,38 +38,41 @@
 
 (defmethod response "GET" [request-headers *out*]
   (let [filename (resolve-file request-headers)]
-    (if (and (-> filename File. .exists) (not (-> filename File. .isDirectory)))
-      (do
-        (binding [*in* (FileReader. filename)]
-            (println (:HTTP-Version request-headers) "200 OK")
-            (println "Content-Type:" (mime-type-of filename))
-            (println "Content-Length:" (-> filename File. .length))
-            (println "")
-            (copy (input-stream filename) *out*)
-            (flush)))
-      (if (-> filename File. .isDirectory)
+    (let [file (-> filename File.)]
+      (if (.exists file)
+        (if (.isFile file)
+          (do
+            (binding [*in* (reader filename)]
+              (println (:HTTP-Version request-headers) "200 OK")
+              (println "Content-Type:" (mime-type-of filename))
+              (println "Content-Length:" (-> filename File. .length))
+              (println "")
+              (copy (input-stream filename) *out*)
+              (flush)))
+        (if (.isDirectory file)
+            (do
+              (println (:HTTP-Version request-headers) "200 OK")
+              (println "Content-Type: text/html")
+              (println "")
+              (println "<html><body>")
+              (doseq [file (-> filename File. .listFiles)]
+                (println (make-directory-index-listing file)))
+              (println "</body></html>"))))
         (do
-          (println (:HTTP-Version request-headers) "200 OK")
-          (println "Content-Type: text/html")
-          (println "")
-          (println "<html><body>")
-          (doseq [file (-> filename File. .listFiles)]
-            (println (make-directory-index-listing file)))
-          (println "</body></html>"))
-        (do
-          (println "should be a 404 on GET" (:Request-URI request-headers)
-          (flush)))))))
+          (println "should be a 404 on GET" (:Request-URI request-headers)))))))
 
 (defmethod response "HEAD" [request-headers *out*]
   (println "HEAD!"))
 
 (defmethod response "POST" [request-headers *out*]
-  (println "POST!"))
+  (doseq [keyval request-headers]
+    (println (key keyval) (val keyval)))
+  (println (read-until-empty)))
 
 (defn http-server []
   (letfn [(http [in out]
-    (binding [*in* (BufferedReader. (InputStreamReader. in))
-              *out* (OutputStreamWriter. out)]
+    (binding [*in* (reader in)
+              *out* (writer out)]
       (let [request-headers
         (parse-request-headers (read-until-empty))]
         (response request-headers out)
