@@ -4,6 +4,7 @@
 (use 'clojure.contrib.io)
 (use 'clojure.string)
 
+(def port 5000)
 (def root "webroot")
 
 (defn read-until-empty []
@@ -46,7 +47,7 @@
         (response request-headers)
       )
     ))]
-    (create-server 5000 http)))
+    (create-server port http)))
 
 (defn -main []
   (http-server))
