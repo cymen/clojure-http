@@ -6,7 +6,7 @@ A HTTP server that can pass this test suite:
 
 ## Usage
 
-FIXME: write
+lein run
 
 ## License
 
