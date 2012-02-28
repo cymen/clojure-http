@@ -29,12 +29,12 @@
 (defn resolve-file [request-headers]
   (str root (:Request-URI request-headers)))
 
-(defn make-url [entry]
-  (str "<a href=\"" entry "\">" entry "</a></br>"))
+(defn make-url [path filename]
+  (str "<a href=\"" path "\">" filename "</a></br>"))
 
 (defn make-directory-index-listing [file]
-  (let [filename (subs (.getPath file) (count root))]
-    (make-url filename)))
+  (let [path (subs (.getPath file) (count root))]
+    (make-url path (.getName file))))
 
 (defmethod response "GET" [request-headers *out*]
   (let [filename (resolve-file request-headers)]
@@ -47,11 +47,11 @@
             (println "")
             (copy (input-stream filename) *out*)
             (flush)))
-      (if (= "/" (:Request-URI request-headers))
-        (doseq [file (-> root File. .listFiles)]
+      (if (-> filename File. .isDirectory)
+        (doseq [file (-> filename File. .listFiles)]
           (println (make-directory-index-listing file)))
         (do
-          (println "GET" (:Request-URI request-headers)
+          (println "should be a 404 on GET" (:Request-URI request-headers)
           (flush)))))))
 
 (defmethod response "HEAD" [request-headers *out*]
