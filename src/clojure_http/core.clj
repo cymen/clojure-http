@@ -15,14 +15,9 @@
     (assoc collection (keyword (first pair)) (second pair))))
 
 (defn parse-request [request-lines]
-  (let [request
-    (merge
-      (zipmap [:Method, :Request-URI, :HTTP-Version] (split (first request-lines) #"\s+"))
-      (reduce parse-key-value-into {} (rest request-lines)))]
-    (doseq [kv request]
-      (println (first kv) " --> " (second kv)))
-  )
-request-lines)
+  (merge
+    (zipmap [:Method, :Request-URI, :HTTP-Version] (split (first request-lines) #"\s+"))
+    (reduce parse-key-value-into {} (rest request-lines))))
 
 (defn http-server []
   (letfn [(http [in out]
@@ -30,8 +25,7 @@ request-lines)
                               *out* (OutputStreamWriter. out)]
                         (let [request
                           (parse-request (read-until-empty))]
-                          (println "\nKABOOM!\n")
-                          (println request)
+                          (println (:Method request))
                         )
                     ))]
     (create-server 5000 http)))
