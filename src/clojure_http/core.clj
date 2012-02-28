@@ -1,8 +1,9 @@
 (ns clojure-http.core)
-(import '[java.io BufferedReader File InputStreamReader OutputStreamWriter])
+(import '[java.io BufferedInputStream BufferedReader File FileInputStream FileReader InputStreamReader OutputStreamWriter])
 (use 'clojure.contrib.server-socket)
 (use 'clojure.contrib.io)
 (use 'clojure.string)
+(use 'pantomime.core)
 
 (def port 5000)
 (def root "webroot")
@@ -23,19 +24,40 @@
     (reduce parse-key-value-into {} (rest request-headers-lines))))
 
 (defmulti response
-  (fn [request-headers] (:Method request-headers)))
+  (fn [request-headers *out*] (:Method request-headers)))
 
-(defmethod response "GET" [request-headers]
-  (if (= "/" (:Request-URI request-headers))
-    (doseq [file (-> root File. .listFiles)]
-      (let [entry (subs (.getPath file) (count root))]
-        (println entry)))
-    (println "GET!")))
+(defn resolve-file [request-headers]
+  (str root (:Request-URI request-headers)))
 
-(defmethod response "HEAD" [request-headers]
+(defn make-url [entry]
+  (str "<a href=\"" entry "\">" entry "</a></br>"))
+
+(defn make-directory-index-listing [file]
+  (let [filename (subs (.getPath file) (count root))]
+    (make-url filename)))
+
+(defmethod response "GET" [request-headers *out*]
+  (let [filename (resolve-file request-headers)]
+    (if (and (-> filename File. .exists) (not (-> filename File. .isDirectory)))
+      (do
+        (binding [*in* (FileReader. filename)]
+            (println (:HTTP-Version request-headers) "200 OK")
+            (println "Content-Type:" (mime-type-of filename))
+            (println "Content-Length:" (-> filename File. .length))
+            (println "")
+            (copy (input-stream filename) *out*)
+            (flush)))
+      (if (= "/" (:Request-URI request-headers))
+        (doseq [file (-> root File. .listFiles)]
+          (println (make-directory-index-listing file)))
+        (do
+          (println "GET" (:Request-URI request-headers)
+          (flush)))))))
+
+(defmethod response "HEAD" [request-headers *out*]
   (println "HEAD!"))
 
-(defmethod response "POST" [request-headers]
+(defmethod response "POST" [request-headers *out*]
   (println "POST!"))
 
 (defn http-server []
@@ -44,7 +66,8 @@
               *out* (OutputStreamWriter. out)]
       (let [request-headers
         (parse-request-headers (read-until-empty))]
-        (response request-headers)
+        (response request-headers out)
+        (flush)
       )
     ))]
     (create-server port http)))
