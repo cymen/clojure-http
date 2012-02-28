@@ -1,8 +1,10 @@
 (ns clojure-http.core)
-(import '[java.io BufferedReader InputStreamReader OutputStreamWriter])
+(import '[java.io BufferedReader File InputStreamReader OutputStreamWriter])
 (use 'clojure.contrib.server-socket)
 (use 'clojure.contrib.io)
 (use 'clojure.string)
+
+(def root "webroot")
 
 (defn read-until-empty []
   (loop [line (read-line) acc []]
@@ -23,7 +25,11 @@
   (fn [request-headers] (:Method request-headers)))
 
 (defmethod response "GET" [request-headers]
-  (println "GET!"))
+  (if (= "/" (:Request-URI request-headers))
+    (doseq [file (-> root File. .listFiles)]
+      (let [entry (subs (.getPath file) (count root))]
+        (println entry)))
+    (println "GET!")))
 
 (defmethod response "HEAD" [request-headers]
   (println "HEAD!"))
