@@ -24,19 +24,11 @@
     (zipmap [:Method, :Request-URI, :HTTP-Version] (split (first request-headers-lines) #"\s+"))
     (reduce parse-key-value-into {} (rest request-headers-lines))))
 
-(defn XXparse-request-body [request-headers]
-  (loop [c (.read *in*) acc []]
-    (do
-      (if (not (.ready *in*))
-        acc
-        (recur (.read *in*) (conj acc c))))))
-
 (defn char-seq [in]
   (map char
     (take-while
-      (partial not= -1)
+      (and (.ready in) (partial not= -1))
         (repeatedly #(.read in)))))
-
 
 (defn parse-request-body [request-headers]
   (if (contains? request-headers :Content-Length)
