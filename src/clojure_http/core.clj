@@ -42,10 +42,11 @@
       (if (.exists file)
         (if (.isFile file)
           (do
-            (binding [*in* (reader filename)]
+            (with-open [*in* (reader filename)]
               (println (:HTTP-Version request-headers) "200 OK")
               (println "Content-Type:" (mime-type-of filename))
               (println "Content-Length:" (-> filename File. .length))
+              (println "Connection: close")
               (println "")
               (copy (input-stream filename) *out*)
               (flush)))
@@ -53,6 +54,7 @@
             (do
               (println (:HTTP-Version request-headers) "200 OK")
               (println "Content-Type: text/html")
+              (println "Connection: close")
               (println "")
               (println "<html><body>")
               (doseq [file (-> filename File. .listFiles)]
@@ -66,8 +68,7 @@
 
 (defmethod response "POST" [request-headers *out*]
   (doseq [keyval request-headers]
-    (println (key keyval) (val keyval)))
-  (println (read-until-empty)))
+    (println (key keyval) (val keyval))))
 
 (defn http-server []
   (letfn [(http [in out]
