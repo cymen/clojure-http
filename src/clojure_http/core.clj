@@ -39,13 +39,13 @@
 
 (defn http-server []
   (letfn [(http [in out]
-                    (binding [*in* (BufferedReader. (InputStreamReader. in))
-                              *out* (OutputStreamWriter. out)]
-                        (let [request-headers
-                          (parse-request-headers (read-until-empty))]
-                          (response request-headers)
-                        )
-                    ))]
+    (binding [*in* (BufferedReader. (InputStreamReader. in))
+              *out* (OutputStreamWriter. out)]
+      (let [request-headers
+        (parse-request-headers (read-until-empty))]
+        (response request-headers)
+      )
+    ))]
     (create-server 5000 http)))
 
 (defn -main []
