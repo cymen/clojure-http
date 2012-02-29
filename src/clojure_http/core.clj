@@ -1,44 +1,16 @@
 (ns clojure-http.core
   (:import (java.io File))
-  (:import (java.net URLDecoder))
+  (:use [clojure-http.parse-request])
+  (:use [clojure-http.method-head])
   (:use [clojure.contrib.server-socket  :only [create-server]])
   (:use [clojure.contrib.io             :only [copy input-stream reader writer]])
-  (:use [clojure.string                 :only [split]])
   (:use [pantomime.mime                 :only [mime-type-of]])
   (:use [clj-time.core                  :only [now]])
   (:use [clj-time.coerce                :only [from-long]])
   (:use [clj-time.format                :only [formatter unparse]]))
 
-(def port 5000)
 (def root "public")
 (def custom-formatter (formatter "EEE, dd MMM yyyy HH:mm:ss 'GMT'"))
-
-(defn readline-until-blank [in]
-  (take-while
-    (partial not= "")
-      (repeatedly #(.readLine in))))
-
-(defn parse-key-value-into [collection line]
-  (let [pair (rest (re-matches #"([^:]+): (.+)" line))]
-    (assoc collection (keyword (first pair)) (second pair))))
-
-(defn parse-request-headers [request-headers-lines]
-  (merge
-    (zipmap [:Method, :Request-URI, :HTTP-Version] (split (first request-headers-lines) #"\s+"))
-    (reduce parse-key-value-into {} (rest request-headers-lines))))
-
-(defn char-seq [in]
-  (map char
-    (take-while
-      (and (.ready in) (partial not= -1))
-        (repeatedly #(.read in)))))
-
-(defn parse-request-body [request-headers]
-  (if (contains? request-headers :Content-Length)
-    (URLDecoder/decode
-      (apply str
-        (take (#(Integer/parseInt (:Content-Length request-headers)))
-          (char-seq *in*))))))
 
 (defn resolve-file [request-headers]
   (str root (:Request-URI request-headers)))
@@ -81,17 +53,17 @@
               (println "")
               (copy (input-stream filename) *out*)
               (flush)))
-        (if (.isDirectory file)
-            (do
-              (let [body (make-directory-page filename file)]
-                (println (:HTTP-Version request-headers) "200 OK")
-                (println "Content-Type: text/html")
-                (println "Connection: close")
-                (println "Date:" (unparse custom-formatter (now)))
-                (println "Server: clip-clop/0.1")
-                (println "Content-Length:" (count body))
-                (println "")
-                (println body)))))
+          (if (.isDirectory file)
+              (do
+                (let [body (make-directory-page filename file)]
+                  (println (:HTTP-Version request-headers) "200 OK")
+                  (println "Content-Type: text/html")
+                  (println "Connection: close")
+                  (println "Date:" (unparse custom-formatter (now)))
+                  (println "Server: clip-clop/0.1")
+                  (println "Content-Length:" (count body))
+                  (println "")
+                  (println body)))))
         (do
           (println (:HTTP-Version request-headers) "404 Not Found")
           (println "Date:" (unparse custom-formatter (now)))
@@ -121,12 +93,12 @@
     (println "")
     (println (parse-request-body request-headers))))
 
-(defn http-server []
+(defn http-server [port]
   (letfn [(http [in out]
     (binding [*in* (reader in)
               *out* (writer out)]
       (let [request-headers
-        (parse-request-headers (readline-until-blank *in*))]
+        (parse-request-headers *in*)]
         (response request-headers out)
         (flush)
       )
@@ -134,4 +106,4 @@
     (create-server port http)))
 
 (defn -main []
-  (http-server))
+  (http-server 5000))
