@@ -10,7 +10,7 @@
   (:use [clj-time.format                :only [formatter unparse]]))
 
 (def port 5000)
-(def root "webroot")
+(def root "public")
 (def custom-formatter (formatter "EEE, dd MMM yyyy HH:mm:ss 'GMT'"))
 
 (defn readline-until-blank [in]
