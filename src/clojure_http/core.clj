@@ -11,7 +11,7 @@
 
 (def port 5000)
 (def root "webroot")
-(def custom-formatter (formatter "EEE, dd MMM yyyy HH:mm:ss ZZZ"))
+(def custom-formatter (formatter "EEE, dd MMM yyyy HH:mm:ss 'GMT'"))
 
 (defn read-until-empty []
   (loop [line (read-line) acc []]
@@ -58,6 +58,7 @@
   (let [filename (resolve-file request-headers)]
     (let [file (-> filename File.)]
       (if (.exists file)
+        ; TODO check for If-Modified-Since and return a 304 (Not Modified) if appropriate
         (if (.isFile file)
           (do
             (with-open [*in* (reader filename)]
@@ -65,7 +66,10 @@
               (println "Content-Type:" (mime-type-of filename))
               (println "Content-Length:" (-> filename File. .length))
               (println "Connection: close")
+              (println "Date:" (unparse custom-formatter (now)))
               (println "Last-Modified:" (unparse custom-formatter (from-long (.lastModified file))))
+              (println "Accept-Ranges: none")
+              (println "Server: clip-clop/0.1")
               (println "")
               (copy (input-stream filename) *out*)
               (flush)))
