@@ -13,7 +13,7 @@
 (def root "webroot")
 (def custom-formatter (formatter "EEE, dd MMM yyyy HH:mm:ss 'GMT'"))
 
-(defn read-until-blank-line [in]
+(defn readline-until-blank [in]
   (take-while
     (partial not= "")
       (repeatedly #(.readLine in))))
@@ -97,7 +97,7 @@
     (binding [*in* (reader in)
               *out* (writer out)]
       (let [request-headers
-        (parse-request-headers (force (read-until-blank-line *in*)))]
+        (parse-request-headers (force (readline-until-blank *in*)))]
         (response request-headers out)
         (flush)
       )
