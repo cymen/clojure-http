@@ -40,18 +40,27 @@
         (take (#(Integer/parseInt (:Content-Length request-headers)))
           (char-seq *in*))))))
 
-(defmulti response
-  (fn [request-headers *out*] (:Method request-headers)))
-
 (defn resolve-file [request-headers]
   (str root (:Request-URI request-headers)))
 
 (defn make-url [path filename]
   (str "<a href=\"" path "\">" filename "</a></br>"))
 
-(defn make-directory-index-listing [file]
+(defn make-directory-index-listing-entry [file]
   (let [path (subs (.getPath file) (count root))]
     (make-url path (.getName file))))
+
+(defn make-directory-index-listing [filename file]
+  (apply str (map make-directory-index-listing-entry (-> filename File. .listFiles))))
+
+(defn make-directory-page [filename file]
+  (apply str
+    (str "<html><head><title>" filename "</title></head><body>")
+    (str (make-directory-index-listing filename file))
+    (str "</body></html>")))
+
+(defmulti response
+  (fn [request-headers *out*] (:Method request-headers)))
 
 (defmethod response "GET" [request-headers *out*]
   (let [filename (resolve-file request-headers)]
@@ -74,14 +83,15 @@
               (flush)))
         (if (.isDirectory file)
             (do
-              (println (:HTTP-Version request-headers) "200 OK")
-              (println "Content-Type: text/html")
-              (println "Connection: close")
-              (println "")
-              (println "<html><body>")
-              (doseq [file (-> filename File. .listFiles)]
-                (println (make-directory-index-listing file)))
-              (println "</body></html>"))))
+              (let [body (make-directory-page filename file)]
+                (println (:HTTP-Version request-headers) "200 OK")
+                (println "Content-Type: text/html")
+                (println "Connection: close")
+                (println "Date:" (unparse custom-formatter (now)))
+                (println "Server: clip-clop/0.1")
+                (println "Content-Length:" (count body))
+                (println "")
+                (println body)))))
         (do
           (println "should be a 404 on GET" (:Request-URI request-headers)))))))
 
@@ -90,6 +100,22 @@
 
 (defmethod response "POST" [request-headers *out*]
   (do
+    (println (:HTTP-Version request-headers) "200 OK")
+    (println "Connection: close")
+    (println "Date:" (unparse custom-formatter (now)))
+    (println "Accept-Ranges: none")
+    (println "Server: clip-clop/0.1")
+    (println "")
+    (println (parse-request-body request-headers))))
+
+(defmethod response "PUT" [request-headers *out*]
+  (do
+    (println (:HTTP-Version request-headers) "200 OK")
+    (println "Connection: close")
+    (println "Date:" (unparse custom-formatter (now)))
+    (println "Accept-Ranges: none")
+    (println "Server: clip-clop/0.1")
+    (println "")
     (println (parse-request-body request-headers))))
 
 (defn http-server []
