@@ -5,9 +5,13 @@
 (use '[clojure.contrib.io :only (copy input-stream reader writer)])
 (use '[clojure.string :only (split)])
 (use '[pantomime.mime :only (mime-type-of)])
+(use '[clj-time.core])
+(use '[clj-time.format])
+(use '[clj-time.coerce])
 
 (def port 5000)
 (def root "webroot")
+(def custom-formatter (formatter "EEE, dd MMM yyyy HH:mm:ss ZZZ"))
 
 (defn read-until-empty []
   (loop [line (read-line) acc []]
@@ -61,6 +65,7 @@
               (println "Content-Type:" (mime-type-of filename))
               (println "Content-Length:" (-> filename File. .length))
               (println "Connection: close")
+              (println "Last-Modified:" (unparse custom-formatter (from-long (.lastModified file))))
               (println "")
               (copy (input-stream filename) *out*)
               (flush)))
@@ -82,8 +87,6 @@
 
 (defmethod response "POST" [request-headers *out*]
   (do
-    (doseq [keyval request-headers]
-      (println (key keyval) (val keyval)))
     (println (parse-request-body request-headers))))
 
 (defn http-server []
