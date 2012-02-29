@@ -5,9 +5,9 @@
 (use '[clojure.contrib.io :only (copy input-stream reader writer)])
 (use '[clojure.string :only (split)])
 (use '[pantomime.mime :only (mime-type-of)])
-(use '[clj-time.core])
-(use '[clj-time.format])
-(use '[clj-time.coerce])
+(use '[clj-time.core :only (now)])
+(use '[clj-time.format :only (formatter unparse)])
+(use '[clj-time.coerce :only (from-long)])
 
 (def port 5000)
 (def root "webroot")
