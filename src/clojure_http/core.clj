@@ -97,7 +97,7 @@
     (binding [*in* (reader in)
               *out* (writer out)]
       (let [request-headers
-        (parse-request-headers (force (readline-until-blank *in*)))]
+        (parse-request-headers (readline-until-blank *in*))]
         (response request-headers out)
         (flush)
       )
