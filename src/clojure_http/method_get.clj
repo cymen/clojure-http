@@ -1,14 +1,11 @@
 (ns clojure-http.method-get
   (:import (java.io File))
   (:use [clojure-http.method])
+  (:use [clojure-http.response])
   (:use [clojure.contrib.io :only [copy input-stream reader]])
-  (:use [pantomime.mime :only [mime-type-of]])
-  (:use [clj-time.core                  :only [now]])
-  (:use [clj-time.coerce                :only [from-long]])
-  (:use [clj-time.format                :only [formatter unparse]]))
+  (:use [pantomime.mime :only [mime-type-of]]))
 
 (def root "public")
-(def custom-formatter (formatter "EEE, dd MMM yyyy HH:mm:ss 'GMT'"))
 
 (defn resolve-file [request-headers]
   (str root (:Request-URI request-headers)))
@@ -41,8 +38,8 @@
               (println "Content-Type:" (mime-type-of filename))
               (println "Content-Length:" (-> filename File. .length))
               (println "Connection: close")
-              (println "Date:" (unparse custom-formatter (now)))
-              (println "Last-Modified:" (unparse custom-formatter (from-long (.lastModified file))))
+              (println "Date:" (now-in-gmt))
+              (println "Last-Modified:" (last-modified-date-in-gmt (.lastModified file)))
               (println "Accept-Ranges: none")
               (println "Server: clip-clop/0.1")
               (println "")
@@ -54,13 +51,13 @@
                   (println (:HTTP-Version request-headers) "200 OK")
                   (println "Content-Type: text/html")
                   (println "Connection: close")
-                  (println "Date:" (unparse custom-formatter (now)))
+                  (println "Date:" (now-in-gmt))
                   (println "Server: clip-clop/0.1")
                   (println "Content-Length:" (count body))
                   (println "")
                   (println body)))))
         (do
           (println (:HTTP-Version request-headers) "404 Not Found")
-          (println "Date:" (unparse custom-formatter (now)))
+          (println "Date:" (now-in-gmt))
           (println "Server: clip-clop/0.1")
           (println "Connection: close"))))))

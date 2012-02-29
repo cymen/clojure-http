@@ -1,4 +1,5 @@
-(ns clojure-http.method-head)
+(ns clojure-http.method-head
+  (:use [clojure-http.method]))
 
-(defn kaboom []
-  (println "Kabooom!"))
+(defmethod method "HEAD" [request-headers *out*]
+  (println "HEAD!"))
