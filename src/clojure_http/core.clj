@@ -8,7 +8,6 @@
   (:use [clojure.contrib.io :only [reader writer]])
   (:use [clojure.contrib.server-socket  :only [create-server]]))
 
-
 (defn http-server [port]
   (letfn [(http [in out]
     (binding [*in* (reader in)
