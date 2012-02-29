@@ -9,4 +9,4 @@
   (unparse custom-formatter (now)))
 
 (defn last-modified-date-in-gmt [last-modified]
-  (unparse custom-formatter (from-long (last-modified))))
+  (unparse custom-formatter (from-long last-modified)))
