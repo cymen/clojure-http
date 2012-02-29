@@ -93,7 +93,10 @@
                 (println "")
                 (println body)))))
         (do
-          (println "should be a 404 on GET" (:Request-URI request-headers)))))))
+          (println (:HTTP-Version request-headers) "404 Not Found")
+          (println "Date:" (unparse custom-formatter (now)))
+          (println "Server: clip-clop/0.1")
+          (println "Connection: close"))))))
 
 (defmethod response "HEAD" [request-headers *out*]
   (println "HEAD!"))
