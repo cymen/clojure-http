@@ -13,11 +13,10 @@
 (def root "webroot")
 (def custom-formatter (formatter "EEE, dd MMM yyyy HH:mm:ss 'GMT'"))
 
-(defn read-until-empty []
-  (loop [line (read-line) acc []]
-    (if (= line "")
-      acc
-      (recur (read-line) (conj acc line)))))
+(defn read-until-blank-line [in]
+  (take-while
+    (partial not= "")
+      (repeatedly #(.readLine in))))
 
 (defn parse-key-value-into [collection line]
   (let [pair (rest (re-matches #"([^:]+): (.+)" line))]
@@ -98,7 +97,7 @@
     (binding [*in* (reader in)
               *out* (writer out)]
       (let [request-headers
-        (parse-request-headers (read-until-empty))]
+        (parse-request-headers (force (read-until-blank-line *in*)))]
         (response request-headers out)
         (flush)
       )
