@@ -11,7 +11,6 @@
               *out* (writer out)]
       (do
         (method (parse-request-headers *in*) out)
-        (flush)
         (. *in* close)
         (. *out* close))))]
     (create-server port http)))
