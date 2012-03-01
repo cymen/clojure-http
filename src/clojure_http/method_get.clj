@@ -26,7 +26,7 @@
     (str (make-directory-index-listing filename file))
     (str "</body></html>")))
 
-(defmethod method "GET" [request-headers *out*]
+(defmethod method "GET" [request-headers out]
   (let [filename (resolve-file request-headers)]
     (let [file (-> filename File.)]
       (if (.exists file)
@@ -43,8 +43,7 @@
               (println "Accept-Ranges: none")
               (println "Server: clip-clop/0.1")
               (println "")
-              (copy (input-stream filename) *out*)
-              (flush)))
+              (copy (input-stream filename) out)))
           (if (.isDirectory file)
               (do
                 (let [body (make-directory-page filename file)]
