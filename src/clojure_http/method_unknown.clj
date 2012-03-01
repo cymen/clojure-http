@@ -4,4 +4,4 @@
   (:use [clojure-http.response]))
 
 (defmethod method :default [request-headers *out*]
-  (reply-with "500 or whatever HTTP code we can use for unimplemented/unknown method"))
+  (println "500 or whatever HTTP code we can use for unimplemented/unknown method"))
