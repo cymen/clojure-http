@@ -1,7 +1,7 @@
 (ns clojure-http.method-put
   (:use [clojure-http.method])
   (:use [clojure-http.parse-request])
-  (:use [clojure-http.response]))
+  (:use [clojure-http.datetime]))
 
 (defmethod method "PUT" [request-headers *out*]
   (do

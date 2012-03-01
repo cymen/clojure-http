@@ -1,7 +1,7 @@
 (ns clojure-http.method-post
   (:use clojure-http.method
         clojure-http.parse-request
-        clojure-http.response))
+        clojure-http.datetime))
 
 (defmethod method "POST" [request-headers out]
   (do
