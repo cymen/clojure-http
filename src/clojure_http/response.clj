@@ -5,8 +5,6 @@
 
 (def custom-formatter (formatter "EEE, dd MMM yyyy HH:mm:ss 'GMT'"))
 
-(defn now-in-gmt []
-  (unparse custom-formatter (now)))
-
-(defn last-modified-date-in-gmt [last-modified]
-  (unparse custom-formatter (from-long last-modified)))
+(defn datetime-in-gmt
+  ([] (unparse custom-formatter (now)))
+  ([last-modified] (unparse custom-formatter (from-long last-modified))))
