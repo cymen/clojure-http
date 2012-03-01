@@ -1,6 +1,9 @@
 (ns clojure-http.log
   (:use [clojure.contrib.io :only [writer]]))
 
-(defn log [message]
-  (binding [*out* (writer System/out)]
-    (println message)))
+(defn log
+  ([message]
+   (log message (writer System/out)))
+  ([message out]
+    (binding [*out* out]
+      (println message))))
