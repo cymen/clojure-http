@@ -5,7 +5,7 @@
   (use [clojure.contrib.io :only [writer]]))
 
 (describe "log"
-  (it "should contain what it is written to it"
+  (it "contains what it is written to it plus a \n"
     (let [stream (ByteArrayOutputStream.)]
       (do
         (log "test123" (writer stream))
