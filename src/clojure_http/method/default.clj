@@ -1,4 +1,4 @@
-(ns clojure-http.method-default
+(ns clojure-http.method.default
   (:use clojure-http.method
         clojure-http.utility.datetime))
 
