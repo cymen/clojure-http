@@ -1,7 +1,7 @@
-(ns clojure-http.filesystem)
+(ns clojure-http.method.get.filesystem)
 
 (defmulti filesystem
-  (fn [request-headers file out]
+  (fn [request-headers file filename out]
     (if (.exists file)
       (cond
         (.isFile file) :file
