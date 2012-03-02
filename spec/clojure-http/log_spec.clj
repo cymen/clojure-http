@@ -1,7 +1,7 @@
-(ns clojure-http.log-spec
+(ns clojure-http.utility.log-spec
   (:import (java.io ByteArrayOutputStream))
   (:use speclj.core
-        clojure-http.log)
+        clojure-http.utility.log)
   (use [clojure.contrib.io :only [writer]]))
 
 (describe "log"

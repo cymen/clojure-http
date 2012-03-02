@@ -1,6 +1,6 @@
-(ns clojure-http.datetime-spec
-  (:use [speclj.core])
-  (:use [clojure-http.datetime])
+(ns clojure-http.utility.datetime-spec
+  (:use speclj.core
+        clojure-http.utility.datetime)
   (:use [clj-time.core :only [date-time from-time-zone time-zone-for-offset]])
   (:use [clj-time.coerce :only [to-long]]))
 
