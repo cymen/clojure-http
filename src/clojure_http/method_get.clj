@@ -1,9 +1,12 @@
 (ns clojure-http.method-get
   (:import (java.io File))
-  (:use [clojure-http.method])
-  (:use [clojure-http.datetime])
+  (:use clojure-http.method
+        clojure-http.filesystem
+        clojure-http.datetime)
   (:use [clojure.contrib.io :only [copy input-stream reader]])
-  (:use [pantomime.mime :only [mime-type-of]]))
+  (:use [pantomime.mime :only [mime-type-of]])
+  (:require clojure-http.get-directory
+            clojure-http.get-file))
 
 (def root "public")
 
@@ -25,13 +28,6 @@
     (str "<html><head><title>" filename "</title></head><body>")
     (str (make-directory-index-listing filename file))
     (str "</body></html>")))
-
-(defmulti filesystem
-  (fn [request-headers file response]
-    (if (.exists file)
-      (cond
-        (.isFile file) :file 
-        (.isDirectory file) :directory))))
 
 (defmethod method "GET" [request-headers out]
   (let [filename (resolve-file request-headers)]
