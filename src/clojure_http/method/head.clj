@@ -1,4 +1,4 @@
-(ns clojure-http.method-head
+(ns clojure-http.method.head
   (:use [clojure-http.method]))
 
 (defmethod method "HEAD" [request-headers *out*]

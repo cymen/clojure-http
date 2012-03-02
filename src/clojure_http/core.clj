@@ -1,13 +1,13 @@
 (ns clojure-http.core
-  (:use clojure-http.parse-request
+  (:use clojure-http.request.parse
         clojure-http.method)
   (:use [clojure.contrib.io :only [reader writer]]
         [clojure.contrib.server-socket :only [create-server]])
-  (:require clojure-http.method-get
-            clojure-http.method-head
-            clojure-http.method-post
-            clojure-http.method-put
-            clojure-http.method-unknown))
+  (:require clojure-http.method.default
+            clojure-http.method.get
+            clojure-http.method.head
+            clojure-http.method.post
+            clojure-http.method.put))
 
 (defn http-server [port]
   (letfn [(http [in out]

@@ -1,4 +1,4 @@
-(ns clojure-http.log
+(ns clojure-http.utility.log
   (:use [clojure.contrib.io :only [writer]]))
 
 (defn log

@@ -1,12 +1,12 @@
-(ns clojure-http.method-get
+(ns clojure-http.method.get
   (:import (java.io File))
   (:use clojure-http.method
         clojure-http.filesystem
-        clojure-http.datetime)
+        clojure-http.utility.datetime)
   (:use [clojure.contrib.io :only [copy input-stream reader]])
   (:use [pantomime.mime :only [mime-type-of]])
-  (:require clojure-http.get-directory
-            clojure-http.get-file))
+  (:require clojure-http.method.get.directory
+            clojure-http.method.get.file))
 
 (def root "public")
 

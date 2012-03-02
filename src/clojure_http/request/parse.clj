@@ -1,7 +1,7 @@
-(ns clojure-http.parse-request
+(ns clojure-http.request.parse
   (:import (java.net URLDecoder))
   (:use [clojure.string :only [split]])
-  (:use clojure-http.log))
+  (:use clojure-http.utility.log))
 
 (defn readline-until-blank [in]
   (take-while

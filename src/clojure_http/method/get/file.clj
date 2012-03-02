@@ -1,8 +1,8 @@
-(ns clojure-http.get-file
+(ns clojure-http.method.get.file
   (:import (java.io File))
-  (:use [clojure-http.filesystem])
-  (:use [clojure-http.datetime])
-  (:use [clojure-http.response])
+  (:use clojure-http.filesystem
+        clojure-http.utility.datetime
+        clojure-http.response)
   (:use [clojure.contrib.io :only [copy input-stream reader]])
   (:use [pantomime.mime :only [mime-type-of]]))
 
