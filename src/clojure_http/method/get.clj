@@ -62,4 +62,6 @@
           (println (:HTTP-Version request-headers) "404 Not Found")
           (println "Date:" (datetime-in-gmt))
           (println "Server: clip-clop/0.1")
-          (println "Connection: close"))))))
+          (println "Connection: close")
+          (println "")
+          (println "File not found"))))))
