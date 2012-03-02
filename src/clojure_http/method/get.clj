@@ -3,7 +3,6 @@
   (:use clojure-http.method
         clojure-http.method.get.filesystem
         clojure-http.utility.datetime)
-  (:use [clojure.contrib.io :only [copy input-stream reader]])
   (:require clojure-http.method.get.default
             clojure-http.method.get.directory
             clojure-http.method.get.file))
