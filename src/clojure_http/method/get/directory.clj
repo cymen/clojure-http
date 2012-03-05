@@ -3,7 +3,7 @@
   (:use clojure-http.method.get.filesystem
         clojure-http.utility.datetime
         clojure-http.response)
-  (:use [clojure.contrib.io :only [copy input-stream reader]])
+  (:use [clojure.contrib.io :only [copy input-stream reader writer]])
   (:use [pantomime.mime :only [mime-type-of]]))
 
 ; TODO how can I have this set in core or in project.clj and get the value from there?
@@ -28,12 +28,18 @@
 (defmethod filesystem :Directory [request-headers file filename]
   (do
     (let [body (make-directory-page filename file)]
-      (println (:HTTP-Version request-headers) "200 OK")
-      (println "Content-Type: text/html")
-      (println "Connection: close")
-      (println "Date:" (datetime-in-gmt))
-      (println "Last-Modified:" (datetime-in-gmt (.lastModified file)))
-      (println "Server: clip-clop/0.1")
-      (println "Content-Length:" (count body))
-      (println "")
-      (println body))))
+      (hash-map
+        :Status-Line {
+          :HTTP-Version (:HTTP-Version request-headers)
+          :Status-Code 200
+          :Status-Message "OK"
+        }
+        :Headers {
+          :Content-Type "text/html"
+          :Connection "close"
+          :Date (datetime-in-gmt)
+          :Last-Modified (datetime-in-gmt (.lastModified file))
+          :Server "clip-clop/0.1"
+          :Content-Length (count body)
+        }
+        :Body (fn [output] (binding [*out* (writer output)] (println body)))))))
