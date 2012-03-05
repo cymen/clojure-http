@@ -1,7 +1,6 @@
 (ns clojure-http.request.parse
   (:import (java.net URLDecoder))
-  (:use [clojure.string :only [split]])
-  (:use clojure-http.utility.log))
+  (:use [clojure.string :only [split]]))
 
 (defn readline-until-blank [in]
   (take-while
@@ -24,7 +23,6 @@
   (let [request-header-lines (readline-until-blank in)]
     (if (not (nil? (first request-header-lines)))
       (do
-        (log (first request-header-lines))
         (merge
           (zipmap [:Method, :Request-URI, :HTTP-Version] (split (first request-header-lines) #"\s+"))
           (reduce parse-key-value-into {} (rest request-header-lines)))))))

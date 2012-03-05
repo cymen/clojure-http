@@ -3,7 +3,7 @@
         clojure-http.request.parse
         clojure-http.utility.datetime))
 
-(defmethod method "POST" [request-headers out]
+(defmethod method :POST [request-headers]
   (do
     (println (:HTTP-Version request-headers) "200 OK")
     (println "Connection: close")

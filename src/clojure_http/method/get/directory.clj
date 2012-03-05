@@ -25,13 +25,14 @@
     (str (make-directory-index-listing filename file))
     (str "</body></html>")))
 
-(defmethod filesystem :Directory [request-headers file filename out]
+(defmethod filesystem :Directory [request-headers file filename]
   (do
     (let [body (make-directory-page filename file)]
       (println (:HTTP-Version request-headers) "200 OK")
       (println "Content-Type: text/html")
       (println "Connection: close")
       (println "Date:" (datetime-in-gmt))
+      (println "Last-Modified:" (datetime-in-gmt (.lastModified file)))
       (println "Server: clip-clop/0.1")
       (println "Content-Length:" (count body))
       (println "")

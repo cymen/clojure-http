@@ -3,11 +3,11 @@
         clojure-http.utility.datetime
         clojure-http.response))
 
-(defmethod filesystem :default [request-headers file filename out]
+(defmethod filesystem :default [request-headers file filename]
   (do
     (println (:HTTP-Version request-headers) "404 Not Found")
-    (println "Date:" (datetime-in-gmt))
-    (println "Server: clip-clop/0.1")
-    (println "Connection: close")
-    (println "")
+    (println unparse-headers
+      { :Date (datetime-in-gmt)
+        :Server "clip-clop/0.1"
+        :Connection "close"})
     (println "File not found")))
