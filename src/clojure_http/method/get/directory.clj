@@ -3,14 +3,12 @@
   (:use clojure-http.method.get.filesystem
         clojure-http.utility.datetime
         clojure-http.response)
-  (:use [clojure.contrib.io :only [copy input-stream reader writer]])
+  (:use [clojure-http.config :as config]
+        [clojure.contrib.io :only [copy input-stream reader writer]])
   (:use [pantomime.mime :only [mime-type-of]]))
 
-; TODO how can I have this set in core or in project.clj and get the value from there?
-(def root "public")
-
 (defn- make-title [filename]
-  (subs filename (count root)))
+  (subs filename (count config/root)))
 
 (defn- make-url-directory [path filename]
   (str "<a href=\"" path "\">" filename "/</a></br>"))
@@ -19,7 +17,7 @@
   (str "<a href=\"" path "\">" filename "</a></br>"))
 
 (defn- make-directory-index-listing-entry [file]
-  (let [path (subs (.getPath file) (count root))]
+  (let [path (subs (.getPath file) (count config/root))]
     (if (.isDirectory file)
       (make-url-directory path (.getName file))
       (make-url-file path (.getName file)))))

@@ -3,7 +3,8 @@
         clojure-http.method
         clojure-http.response
         clojure-http.utility.log)
-  (:use [clojure.contrib.io :only [reader writer]]
+  (:use [clojure-http.config :as config]
+        [clojure.contrib.io :only [reader writer]]
         [server-socket :only [create-server]])
   (:require clojure-http.method.default
             clojure-http.method.get
@@ -33,4 +34,4 @@
     (create-server port http)))
 
 (defn -main []
-  (http-server 5000))
+  (http-server config/port))

@@ -2,15 +2,13 @@
   (:import (java.io File))
   (:use clojure-http.method
         clojure-http.method.get.filesystem)
+  (:use [clojure-http.config :as config])
   (:require clojure-http.method.get.default
             clojure-http.method.get.directory
             clojure-http.method.get.file))
 
-; TODO how can I have this set in core or in project.clj and get the value from there?
-(def root "public")
-
 (defn resolve-file [request-headers]
-  (str root (:Request-URI request-headers)))
+  (str config/root (:Request-URI request-headers)))
 
 (defmethod method :GET [request-headers]
   (let [filename (resolve-file request-headers)]
