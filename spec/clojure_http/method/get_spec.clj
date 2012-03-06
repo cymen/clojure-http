@@ -1,9 +1,11 @@
 (ns clojure-http.method.get-spec
-  (:import (java.io ByteArrayOutputStream))
+  (:import (java.io ByteArrayOutputStream)
+           (java.util Arrays))
   (:use speclj.core
         clojure-http.method
         clojure-http.method.get)
-  (use [clojure.contrib.io :only [writer]]))
+  (:use [clojure-http.config :as config])
+  (use [clojure.contrib.io :only [copy input-stream writer]]))
 
 (describe "get"
 
@@ -20,21 +22,28 @@
 
   (it "can transfer text contents"
     (let [filename  "/test.txt"
-          stream    (ByteArrayOutputStream.)
-          response  (method { :Method "GET" :Request-URI filename })
-          body      (:Body response)
-          _         (body stream)
-          text      (.toString stream)]
-      (should= "test\n" text)))
+          stream        (ByteArrayOutputStream.)
+          response      (method { :Method "GET" :Request-URI filename })
+          body          (:Body response)
+          _             (body stream)
+          text          (.toString stream)
+          actual-stream (ByteArrayOutputStream.)
+          _             (copy (input-stream (str config/root filename)) actual-stream)
+          actual        (.toString actual-stream)]
+      (should= actual text)))
 
   (it "can transfer binary contents"
-    (let [filename  "/clojure-icon.gif"
-          stream    (ByteArrayOutputStream.)
-          response  (method { :Method "GET" :Request-URI filename })
-          body      (:Body response)
-          _         (body stream)
-          result    (.toString stream)]
-      (should= "test\n" result)))
+    (let [filename      "/clojure-icon.gif"
+          stream        (ByteArrayOutputStream.)
+          response      (method { :Method "GET" :Request-URI filename })
+          body          (:Body response)
+          _             (body stream)
+          result        (.toByteArray stream)
+          actual-stream (ByteArrayOutputStream.)
+          _             (copy (input-stream (str config/root filename)) actual-stream)
+          actual        (.toByteArray actual-stream)
+          equal         (. Arrays equals actual result)]
+      (should= true equal)))
 )
 
 (run-specs)
