@@ -14,13 +14,13 @@
 
 (defn http-server [port]
   (letfn [(http [in out remote-host-address]
-    (binding [*in* (reader in)
+    (binding [*in*  (reader in)
               *out* (writer out)]
       (do
-        (let [request (parse-request-headers *in*)
-              response (method request)]
-          (log (str "request: " request))
-          (log-request-response remote-host-address request response)
+        (let [request   (parse-request-headers *in*)
+              response  (method request)]
+          ;(log (str "request: " request))
+          ;(log-request-response remote-host-address request response)
           (println (unparse-status-line (:Status-Line response)))
           (println (unparse-headers (add-default-headers (:Headers response))))
           (if (contains? response :Body)
