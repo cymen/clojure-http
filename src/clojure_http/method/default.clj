@@ -9,9 +9,4 @@
       :Status-Code 501
       :Status-Message "Not implemented"
     }
-    :Headers {
-      :Date (datetime-in-gmt)
-      :Server "clip-clop/0.1"
-      :Connection "close"
-    }
     :Body "Not implemented"))

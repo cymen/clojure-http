@@ -30,9 +30,6 @@
           :Headers {
             :Content-Type (mime-type-of filename)
             :Content-Length (-> filename File. .length)
-            :Connection "close"
-            :Date (datetime-in-gmt)
             :Last-Modified (datetime-in-gmt last-modified)
             :Accept-Ranges "none"
-            :Server "clip-clop/0.1" }
           :Body (fn [output] (copy (input-stream filename) output))))))
