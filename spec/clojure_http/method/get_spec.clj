@@ -4,8 +4,22 @@
   (:use speclj.core
         clojure-http.method
         clojure-http.method.get)
-  (:use [clojure-http.config :as config])
-  (use [clojure.contrib.io :only [copy input-stream writer]]))
+  (:use [clojure-http.config :as config]
+        [clojure.contrib.io :only [copy input-stream writer]]))
+
+(defn- run-fn-to-output-stream [function]
+  (let [stream  (ByteArrayOutputStream.)
+        _       (function stream)]
+    stream))
+
+(defn- read-file-to-output-stream [filename]
+  (let [stream  (ByteArrayOutputStream.)
+        _       (copy (input-stream (str config/root filename)) stream)]
+    stream))
+
+(defn- compare-output-streams [stream1 stream2]
+  (. Arrays equals (.toByteArray stream1) (.toByteArray stream2)))
+
 
 (describe "get"
 
@@ -21,29 +35,20 @@
       (should= 404 (:Status-Code (:Status-Line (method { :Method "GET" :Request-URI filename }))))))
 
   (it "can transfer text contents"
-    (let [filename  "/test.txt"
-          stream        (ByteArrayOutputStream.)
+    (let [filename      "/test.txt"
           response      (method { :Method "GET" :Request-URI filename })
           body          (:Body response)
-          _             (body stream)
-          text          (.toString stream)
-          actual-stream (ByteArrayOutputStream.)
-          _             (copy (input-stream (str config/root filename)) actual-stream)
-          actual        (.toString actual-stream)]
-      (should= actual text)))
+          http-result   (run-fn-to-output-stream body)
+          actual-result (read-file-to-output-stream filename)]
+      (should= true (compare-output-streams actual-result http-result))))
 
   (it "can transfer binary contents"
     (let [filename      "/clojure-icon.gif"
-          stream        (ByteArrayOutputStream.)
           response      (method { :Method "GET" :Request-URI filename })
           body          (:Body response)
-          _             (body stream)
-          result        (.toByteArray stream)
-          actual-stream (ByteArrayOutputStream.)
-          _             (copy (input-stream (str config/root filename)) actual-stream)
-          actual        (.toByteArray actual-stream)
-          equal         (. Arrays equals actual result)]
-      (should= true equal)))
+          http-result   (run-fn-to-output-stream body)
+          actual-result (read-file-to-output-stream filename)]
+      (should= true (compare-output-streams actual-result http-result))))
 )
 
 (run-specs)

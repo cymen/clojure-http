@@ -3,9 +3,9 @@
   (:use clojure-http.method.get.filesystem
         clojure-http.response
         clojure-http.utility.datetime)
-  (:use [clojure.contrib.io :only [copy input-stream writer]])
-  (:use [clj-time.core :only [after?]])
-  (:use [pantomime.mime :only [mime-type-of]]))
+  (:use [clojure.contrib.io :only [copy input-stream writer]]
+        [clj-time.core :only [after?]]
+        [pantomime.mime :only [mime-type-of]]))
 
 (defn- modified-since? [since actual]
   (if (nil? since)
