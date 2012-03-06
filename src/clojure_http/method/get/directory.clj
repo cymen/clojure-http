@@ -9,19 +9,27 @@
 ; TODO how can I have this set in core or in project.clj and get the value from there?
 (def root "public")
 
-(defn- make-url [path filename]
+(defn- make-title [filename]
+  (subs filename (count root)))
+
+(defn- make-url-directory [path filename]
+  (str "<a href=\"" path "\">" filename "/</a></br>"))
+
+(defn- make-url-file [path filename]
   (str "<a href=\"" path "\">" filename "</a></br>"))
 
 (defn- make-directory-index-listing-entry [file]
   (let [path (subs (.getPath file) (count root))]
-    (make-url path (.getName file))))
+    (if (.isDirectory file)
+      (make-url-directory path (.getName file))
+      (make-url-file path (.getName file)))))
 
 (defn- make-directory-index-listing [filename file]
   (apply str (map make-directory-index-listing-entry (-> filename File. .listFiles))))
 
 (defn- make-directory-page [filename file]
   (apply str
-    (str "<html><head><title>" filename "</title></head><body>")
+    (str "<html><head><title>" (make-title filename) "</title></head><body>")
     (str (make-directory-index-listing filename file))
     (str "</body></html>")))
 

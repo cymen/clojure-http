@@ -19,7 +19,7 @@
       (do
         (let [request (parse-request-headers *in*)
               response (method request)]
-          (log remote-host-address request response)
+          ;(log remote-host-address request response)
           (println (unparse-status-line (:Status-Line response)))
           (println (unparse-headers (:Headers response)))
           (if (contains? response :Body)
