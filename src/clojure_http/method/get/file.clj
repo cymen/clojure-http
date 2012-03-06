@@ -15,29 +15,27 @@
 (defmethod filesystem :File [request-headers file filename]
     (let [last-modified (.lastModified file)]
       (if (not (modified-since? (:If-Modified-Since request-headers) (datetime-from-long last-modified)))
-        (do
-          (hash-map
-            :Status-Line {
-              :HTTP-Version (:HTTP-Version request-headers)
-              :Status-Code 304
-              :Status-Message "Not Modified"
-            }
-            :Headers {
-              :Connection "close"
-              :Server "clip-clop/0.1" }))
-        (do
-          (hash-map
-            :Status-Line {
-              :HTTP-Version (:HTTP-Version request-headers)
-              :Status-Code 200
-              :Status-Message "OK"
-            }
-            :Headers {
-              :Content-Type (mime-type-of filename)
-              :Content-Length (-> filename File. .length)
-              :Connection "close"
-              :Date (datetime-in-gmt)
-              :Last-Modified (datetime-in-gmt last-modified)
-              :Accept-Ranges "none"
-              :Server "clip-clop/0.1" }
-            :Body (fn [output] (copy (input-stream filename) output)))))))
+        (hash-map
+          :Status-Line {
+            :HTTP-Version (:HTTP-Version request-headers)
+            :Status-Code 304
+            :Status-Message "Not Modified"
+          }
+          :Headers {
+            :Connection "close"
+            :Server "clip-clop/0.1" })
+        (hash-map
+          :Status-Line {
+            :HTTP-Version (:HTTP-Version request-headers)
+            :Status-Code 200
+            :Status-Message "OK"
+          }
+          :Headers {
+            :Content-Type (mime-type-of filename)
+            :Content-Length (-> filename File. .length)
+            :Connection "close"
+            :Date (datetime-in-gmt)
+            :Last-Modified (datetime-in-gmt last-modified)
+            :Accept-Ranges "none"
+            :Server "clip-clop/0.1" }
+          :Body (fn [output] (copy (input-stream filename) output))))))
