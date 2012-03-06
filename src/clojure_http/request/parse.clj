@@ -21,7 +21,7 @@
 
 (defn parse-request-headers [in]
   (let [request-header-lines (readline-until-blank in)]
-    (if (not (nil? (first request-header-lines)))
+    (if (not (empty? (clojure.string/trim (first request-header-lines))))
       (do
         (merge
           (zipmap [:Method, :Request-URI, :HTTP-Version] (split (first request-header-lines) #"\s+"))

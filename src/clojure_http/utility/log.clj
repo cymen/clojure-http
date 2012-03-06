@@ -11,9 +11,11 @@
     (str (:Status-Code (:Status-Line response)) " 0")))
 
 (defn log
+  ([message] (log message (writer System/out)))
+  ([message out] (binding [*out* out] (println message))))
+
+(defn log-request-response
   ([remote-host-address request response]
-   (log remote-host-address request response (writer System/out)))
+    (log-request-response remote-host-address request response (writer System/out)))
   ([remote-host-address request response out]
-    (binding [*out* out]
-      (println
-        (str remote-host-address " - - [" (apache-datetime) "] \"" (request-line request) "\" " (response-line response))))))
+    (log (str remote-host-address " - - [" (apache-datetime) "] \"" (request-line request) "\" " (response-line response)) out)))
