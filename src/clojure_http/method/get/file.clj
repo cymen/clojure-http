@@ -29,7 +29,8 @@
           }
           :Headers {
             :Content-Type (mime-type-of filename)
-            :Content-Length (-> filename File. .length)
+            :Content-Length (.length file)
             :Last-Modified (datetime-in-gmt last-modified)
             :Accept-Ranges "none"
+          }
           :Body (fn [output] (copy (input-stream filename) output))))))
