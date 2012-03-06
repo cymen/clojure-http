@@ -1,8 +1,7 @@
 (ns clojure-http.method.get
   (:import (java.io File))
   (:use clojure-http.method
-        clojure-http.method.get.filesystem
-        clojure-http.utility.datetime)
+        clojure-http.method.get.filesystem)
   (:require clojure-http.method.get.default
             clojure-http.method.get.directory
             clojure-http.method.get.file))
