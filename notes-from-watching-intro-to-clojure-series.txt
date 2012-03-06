@@ -1,8 +1,0 @@
-http://www.youtube.com/watch?v=YvE8E3AfNfk&feature=related
-
-- Could use namespaces to handle different types of HTTP requests
-  - have to try it to see if it's ugly
-  - wonder if possible to abstract it that much... I think so...
-
-(clojure.core/in-ns (quote alligator))
-(clojure.core/refer (quote clojure.core))
