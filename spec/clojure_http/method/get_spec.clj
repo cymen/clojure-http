@@ -20,11 +20,10 @@
 (defn- compare-output-streams [stream1 stream2]
   (. Arrays equals (.toByteArray stream1) (.toByteArray stream2)))
 
-
 (describe "get"
 
   (it "resolves a request URI to a file within root"
-    (should= "public/nachos" (resolve-file {:Request-URI "/nachos"})))
+    (should= (str config/root "/nachos") (resolve-file {:Request-URI "/nachos"})))
 
   (it "responds to a request for a file"
     (let [filename "/test.txt"]
