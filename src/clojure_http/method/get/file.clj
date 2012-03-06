@@ -20,10 +20,7 @@
             :HTTP-Version (:HTTP-Version request-headers)
             :Status-Code 304
             :Status-Message "Not Modified"
-          }
-          :Headers {
-            :Connection "close"
-            :Server "clip-clop/0.1" })
+          })
         (hash-map
           :Status-Line {
             :HTTP-Version (:HTTP-Version request-headers)

@@ -21,7 +21,7 @@
               response (method request)]
           ;(log remote-host-address request response)
           (println (unparse-status-line (:Status-Line response)))
-          (println (unparse-headers (:Headers response)))
+          (println (unparse-headers (add-default-headers (:Headers response))))
           (if (contains? response :Body)
             (let [body (:Body response)]
               (if (fn? body)

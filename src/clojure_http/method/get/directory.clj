@@ -43,10 +43,7 @@
       }
       :Headers {
         :Content-Type "text/html"
-        :Connection "close"
-        :Date (datetime-in-gmt)
         :Last-Modified (datetime-in-gmt (.lastModified file))
-        :Server "clip-clop/0.1"
         :Content-Length (count body)
       }
       :Body body)))

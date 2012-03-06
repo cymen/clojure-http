@@ -11,9 +11,4 @@
       :Status-Code 404
       :Status-Message "Not Found"
     }
-    :Headers {
-      :Date (datetime-in-gmt)
-      :Server "clip-clop/0.1"
-      :Connection "close"
-    }
     :Body "File not found"))

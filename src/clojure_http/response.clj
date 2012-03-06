@@ -1,5 +1,15 @@
 (ns clojure-http.response
-  (:use clojure-http.utility.log))
+  (:use clojure-http.utility.datetime
+        clojure-http.utility.log))
+
+(defn add-default-headers [headers-map]
+  (merge
+    headers-map
+    {
+      :Server "clip-clop/0.2"
+      :Connection "close"
+      :Date (datetime-in-gmt)
+    }))
 
 (defn unparse-status-line [status-line]
   (str (:HTTP-Version status-line) " " (:Status-Code status-line) " " (:Status-Message status-line)))
