@@ -1,6 +1,8 @@
 (ns clojure-http.method.post
   (:use clojure-http.method
-        clojure-http.request.parse))
+        clojure-http.method.post.parse-body
+        clojure-http.method.post.default
+        clojure-http.method.post.urlencoded))
 
 (defmethod method :POST [request-headers]
   (hash-map
@@ -9,4 +11,4 @@
       :Status-Code 200
       :Status-Message "OK"
     }
-    :Body (parse-request-body request-headers)))
+    :Body (parse-body request-headers)))

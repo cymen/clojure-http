@@ -1,7 +1,5 @@
 (ns clojure-http.method.get.default
-  (:use clojure-http.method.get.filesystem
-        clojure-http.utility.datetime
-        clojure-http.response)
+  (:use clojure-http.method.get.filesystem)
   (:use [clojure.contrib.io :only [copy input-stream reader writer]]))
 
 (defmethod filesystem :default [request-headers file filename]

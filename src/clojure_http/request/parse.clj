@@ -26,10 +26,3 @@
         (merge
           (zipmap [:Method, :Request-URI, :HTTP-Version] (split (first request-header-lines) #"\s+"))
           (reduce parse-key-value-into {} (rest request-header-lines)))))))
-
-(defn parse-request-body [request-headers]
-  (if (contains? request-headers :Content-Length)
-    (URLDecoder/decode
-      (apply str
-        (take (#(Integer/parseInt (:Content-Length request-headers)))
-          (char-seq *in*))))))

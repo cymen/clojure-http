@@ -25,6 +25,9 @@
   (it "resolves a request URI to a file within root"
     (should= (str config/root "/nachos") (resolve-file {:Request-URI "/nachos"})))
 
+  (it "responds to a request for the root"
+    (should= 200 (:Status-Code (:Status-Line (method { :Method "GET" :Request-URI "/" })))))
+
   (it "responds to a request for a file"
     (let [filename "/test.txt"]
       (should= 200 (:Status-Code (:Status-Line (method { :Method "GET" :Request-URI filename }))))))
@@ -33,7 +36,7 @@
     (let [filename "/file-does-not-exist.txt"]
       (should= 404 (:Status-Code (:Status-Line (method { :Method "GET" :Request-URI filename }))))))
 
-  (it "can transfer text contents"
+  (it "transfers text file"
     (let [filename      "/test.txt"
           response      (method { :Method "GET" :Request-URI filename })
           body          (:Body response)
@@ -41,7 +44,7 @@
           actual-result (read-file-to-output-stream filename)]
       (should= true (compare-output-streams actual-result http-result))))
 
-  (it "can transfer binary contents"
+  (it "transfers binary file"
     (let [filename      "/clojure-icon.gif"
           response      (method { :Method "GET" :Request-URI filename })
           body          (:Body response)
