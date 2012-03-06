@@ -26,20 +26,19 @@
     (str "</body></html>")))
 
 (defmethod filesystem :Directory [request-headers file filename]
-  (do
-    (let [body (make-directory-page filename file)]
-      (hash-map
-        :Status-Line {
-          :HTTP-Version (:HTTP-Version request-headers)
-          :Status-Code 200
-          :Status-Message "OK"
-        }
-        :Headers {
-          :Content-Type "text/html"
-          :Connection "close"
-          :Date (datetime-in-gmt)
-          :Last-Modified (datetime-in-gmt (.lastModified file))
-          :Server "clip-clop/0.1"
-          :Content-Length (count body)
-        }
-        :Body (fn [output] (binding [*out* (writer output)] (println body)))))))
+  (let [body (make-directory-page filename file)]
+    (hash-map
+      :Status-Line {
+        :HTTP-Version (:HTTP-Version request-headers)
+        :Status-Code 200
+        :Status-Message "OK"
+      }
+      :Headers {
+        :Content-Type "text/html"
+        :Connection "close"
+        :Date (datetime-in-gmt)
+        :Last-Modified (datetime-in-gmt (.lastModified file))
+        :Server "clip-clop/0.1"
+        :Content-Length (count body)
+      }
+      :Body body)))

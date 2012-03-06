@@ -23,7 +23,10 @@
           (println (unparse-status-line (:Status-Line response)))
           (println (unparse-headers (:Headers response)))
           (if (contains? response :Body)
-            ((:Body response) out)))
+            (let [body (:Body response)]
+              (if (fn? body)
+                (body out)
+                (println body)))))
         (. in close)
         (. out close))))]
     (create-server port http)))

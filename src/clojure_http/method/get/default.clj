@@ -16,4 +16,4 @@
       :Server "clip-clop/0.1"
       :Connection "close"
     }
-    :Body (fn [output] (binding [*out* (writer output)] (println "File not found")))))
+    :Body "File not found"))
