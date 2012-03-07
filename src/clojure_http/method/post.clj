@@ -5,7 +5,7 @@
         clojure-http.method.post.urlencoded
         clojure-http.request.parse))
 
-(defmethod method :POST [request-headers]
-  (let [length (Integer/parseInt (:Content-Length request-headers))
-        body (fn [] (byte-seq *in* length))]
+(defmethod method :POST [request-headers in]
+  (let [length  (Integer/parseInt (:Content-Length request-headers))
+        body    (fn [] (byte-seq in length))]
     (post request-headers body)))

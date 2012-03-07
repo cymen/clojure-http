@@ -1,8 +1,7 @@
-(ns clojure-http.method.default
-  (:use clojure-http.method
-        clojure-http.utility.datetime))
+(ns clojure-http.method.put.default
+  (:use clojure-http.method.put.put))
 
-(defmethod method :default [request-headers in]
+(defmethod put :default [request-headers body]
   (hash-map
     :Status-Line {
       :HTTP-Version (:HTTP-Version request-headers)

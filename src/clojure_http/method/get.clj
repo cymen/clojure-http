@@ -10,7 +10,7 @@
 (defn resolve-file [request-headers]
   (str config/root (:Request-URI request-headers)))
 
-(defmethod method :GET [request-headers]
+(defmethod method :GET [request-headers in]
   (let [filename (resolve-file request-headers)]
     (let [file (-> filename File.)]
       (filesystem request-headers file filename))))

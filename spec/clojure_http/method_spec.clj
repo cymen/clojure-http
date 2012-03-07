@@ -9,13 +9,13 @@
 
 (describe "method"
   (it "responds to a METHOD_MISSING request with 501"
-    (= (:Status-Code (method { :Method "METHOD_MISSING" :Request-URI "/" })) 501))
+    (= (:Status-Code (method { :Method "METHOD_MISSING" :Request-URI "/" } *in*)) 501))
 
   (it "responds to a GET request with 200"
-    (= (:Status-Code (method { :Method "GET" :Request-URI "/" })) 200))
+    (= (:Status-Code (method { :Method "GET" :Request-URI "/" } *in*)) 200))
 
   (it "responds to a HEAD request with 200"
-    (= (:Status-Code (method { :Method "HEAD" :Request-URI "/" })) 200))
+    (= (:Status-Code (method { :Method "HEAD" :Request-URI "/" } *in*)) 200))
 )
 
 (run-specs)

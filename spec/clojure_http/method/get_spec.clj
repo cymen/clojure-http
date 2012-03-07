@@ -26,19 +26,19 @@
     (should= (str config/root "/nachos") (resolve-file {:Request-URI "/nachos"})))
 
   (it "responds to a request for the root"
-    (should= 200 (:Status-Code (:Status-Line (method { :Method "GET" :Request-URI "/" })))))
+    (should= 200 (:Status-Code (:Status-Line (method { :Method "GET" :Request-URI "/" } *in*)))))
 
   (it "responds to a request for a file"
     (let [filename "/test.txt"]
-      (should= 200 (:Status-Code (:Status-Line (method { :Method "GET" :Request-URI filename }))))))
+      (should= 200 (:Status-Code (:Status-Line (method { :Method "GET" :Request-URI filename } *in*))))))
 
   (it "responds to a request for a not-present file"
     (let [filename "/file-does-not-exist.txt"]
-      (should= 404 (:Status-Code (:Status-Line (method { :Method "GET" :Request-URI filename }))))))
+      (should= 404 (:Status-Code (:Status-Line (method { :Method "GET" :Request-URI filename } *in*))))))
 
   (it "transfers text file"
     (let [filename      "/test.txt"
-          response      (method { :Method "GET" :Request-URI filename })
+          response      (method { :Method "GET" :Request-URI filename } *in*)
           body          (:Body response)
           http-result   (run-fn-to-output-stream body)
           actual-result (read-file-to-output-stream filename)]
@@ -46,7 +46,7 @@
 
   (it "transfers binary file"
     (let [filename      "/clojure-icon.gif"
-          response      (method { :Method "GET" :Request-URI filename })
+          response      (method { :Method "GET" :Request-URI filename } *in*)
           body          (:Body response)
           http-result   (run-fn-to-output-stream body)
           actual-result (read-file-to-output-stream filename)]

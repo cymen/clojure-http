@@ -6,5 +6,5 @@
     request-headers
     { :Method "GET" }))
 
-(defmethod method :HEAD [request-headers]
-  (dissoc (method (override-method request-headers)) :Body))
+(defmethod method :HEAD [request-headers in]
+  (dissoc (method (override-method request-headers) in) :Body))
