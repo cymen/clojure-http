@@ -3,8 +3,7 @@
   (:use clojure-http.method.get.filesystem
         clojure-http.utility.datetime
         clojure-http.response)
-  (:use [clojure-http.config :as config]
-        [clojure.contrib.io :only [copy input-stream reader writer]])
+  (:use [clojure-http.config :as config])
   (:use [pantomime.mime :only [mime-type-of]]))
 
 (defn- make-title [filename]

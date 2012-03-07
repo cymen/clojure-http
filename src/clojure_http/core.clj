@@ -20,7 +20,6 @@
       (do
         (let [request   (parse-request-headers *in*)
               response  (method request)]
-          ;(log (str "request: " request))
           ;(log-request-response remote-host-address request response)
           (println (unparse-status-line (:Status-Line response)))
           (println (unparse-headers (add-default-headers (:Headers response))))

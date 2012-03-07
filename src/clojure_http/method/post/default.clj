@@ -1,7 +1,7 @@
 (ns clojure-http.method.post.default
-  (:use clojure-http.method.post.parse-body))
+  (:use clojure-http.method.post.post))
 
-(defmethod parse-body :default [request-headers body]
+(defmethod post :default [request-headers body]
   (hash-map
     :Status-Line {
       :HTTP-Version (:HTTP-Version request-headers)

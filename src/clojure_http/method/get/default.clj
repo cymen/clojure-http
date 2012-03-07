@@ -1,6 +1,5 @@
 (ns clojure-http.method.get.default
-  (:use clojure-http.method.get.filesystem)
-  (:use [clojure.contrib.io :only [copy input-stream reader writer]]))
+  (:use clojure-http.method.get.filesystem))
 
 (defmethod filesystem :default [request-headers file filename]
   (hash-map
