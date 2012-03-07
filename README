@@ -1,14 +1,17 @@
-# clojure-http
+clojure-http
+------------
 
 A HTTP server that can pass this test suite:
 
   https://github.com/8thlight/cob_spec
 
-## Usage
+Usage
+-----
 
 lein run
 
-## License
+License
+-------
 
 Copyright (C) 2012 Cymen Vig
 
