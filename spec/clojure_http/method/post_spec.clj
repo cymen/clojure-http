@@ -12,14 +12,12 @@
     (let [value       "Field1=Value1&Field2=Value2"
           body        (URLEncoder/encode value)
           stream      (reader (ByteArrayInputStream. (.getBytes body)))
-          response    (method
-                        (hash-map
-                          :Method "POST"
-                          :Request-URI "/anywhere"
-                          :Content-Type "application/x-www-form-urlencoded"
-                          :Content-Length (str (count body))
-                        )
-                        stream)
+          request     (hash-map
+                        :Method "POST"
+                        :Request-URI "/anywhere"
+                        :Content-Type "application/x-www-form-urlencoded"
+                        :Content-Length (str (count body)))
+          response    (method request stream)
           body        (:Body response)]
       (should= value body)))
 )
