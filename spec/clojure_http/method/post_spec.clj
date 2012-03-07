@@ -1,16 +1,10 @@
 (ns clojure-http.method.post-spec
   (:import (java.net URLEncoder)
-           (java.io ByteArrayInputStream)
-           (java.io ByteArrayOutputStream))
+           (java.io ByteArrayInputStream))
   (:use speclj.core
         clojure-http.method
         clojure-http.method.post)
   (:use [clojure.contrib.io :only [reader]]))
-
-(defn- run-fn-to-output-stream [function]
-  (let [stream  (ByteArrayOutputStream.)
-        _       (function stream)]
-    stream))
 
 (describe "post"
 
