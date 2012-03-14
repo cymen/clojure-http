@@ -18,11 +18,14 @@
 (defn char-seq [in]
   (map char (byte-seq in)))
 
+(defn parse-key-value [line]
+  (rest (re-matches #"([^:]+): (.+)" line)))
+
 (defn parse-key-value-into [collection line]
-  (let [pair (rest (re-matches #"([^:]+): (.+)" line))]
+  (let [pair (parse-key-value line)]
     (assoc collection (keyword (first pair)) (second pair))))
 
-(defn parse-request-headers [in]
+(defn parse-request [in]
   (let [request-header-lines (readline-until-blank in)]
     (if (and (not (nil? (first request-header-lines))) (not (empty? (clojure.string/trim (first request-header-lines)))))
       (do

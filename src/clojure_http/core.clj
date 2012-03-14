@@ -18,7 +18,7 @@
     (binding [*in*  (reader in)
               *out* (writer out)]
       (do
-        (let [request   (parse-request-headers *in*)
+        (let [request   (parse-request *in*)
               response  (method request *in*)]
           (log-request-response remote-host-address request response)
           (println (unparse-status-line (:Status-Line response)))
