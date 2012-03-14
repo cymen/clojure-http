@@ -29,8 +29,9 @@
       (.close))))
 
 (defn- accept-fn [^Socket s connections fun]
-  (let [ins (.getInputStream s)
-        outs (.getOutputStream s)]
+  (let [ins   (.getInputStream s)
+        outs  (.getOutputStream s)
+        _     (. s (setSoTimeout 10000))]
     (on-thread #(do
                   (dosync (commute connections conj s))
                   (try
