@@ -10,4 +10,4 @@
       :Status-Code 200
       :Status-Message "OK"
     }
-    :Body (decode body)))
+    :Body (decode (body))))

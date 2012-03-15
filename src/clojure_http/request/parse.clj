@@ -1,22 +1,6 @@
 (ns clojure-http.request.parse
-  (:use [clojure.string :as string :only [split]]))
-
-(defn readline-until-blank [in]
-  (take-while
-    (partial not= "")
-      (repeatedly #(.readLine in))))
-
-(defn byte-seq
-  ([in]
-    (take-while
-      (and (.ready in) (partial not= -1))
-        (repeatedly #(.read in))))
-  ([in length]
-    (take length
-      (byte-seq in))))
-
-(defn char-seq [in]
-  (map char (byte-seq in)))
+  (:use [clojure.string :as string :only [split]]
+        [clojure-http.utility.stream :as stream]))
 
 (defn parse-key-value [line]
   (rest (re-matches #"([^:]+): (.+)" line)))
@@ -25,10 +9,15 @@
   (let [pair (parse-key-value line)]
     (assoc collection (keyword (first pair)) (second pair))))
 
+(defn parse-request-line [line]
+  (zipmap [:Method, :Request-URI, :HTTP-Version] (string/split line #"\s+")))
+
+(defn parse-request-headers [lines]
+  (reduce parse-key-value-into {} lines))
+
 (defn parse-request [in]
-  (let [request-header-lines (readline-until-blank in)]
-    (if (and (not (nil? (first request-header-lines))) (not (empty? (clojure.string/trim (first request-header-lines)))))
-      (do
-        (merge
-          (zipmap [:Method, :Request-URI, :HTTP-Version] (string/split (first request-header-lines) #"\s+"))
-          (reduce parse-key-value-into {} (rest request-header-lines)))))))
+  (let [request-header-lines (stream/readline-until-emptyline in)]
+    (do
+      (merge
+        (parse-request-line (first request-header-lines))
+        (parse-request-headers (rest request-header-lines))))))

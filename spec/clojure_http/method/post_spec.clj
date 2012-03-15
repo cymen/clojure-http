@@ -11,7 +11,7 @@
   (it "unparses a urlencoded body"
     (let [value       "Field1=Value1&Field2=Value2"
           body        (URLEncoder/encode value)
-          stream      (reader (ByteArrayInputStream. (.getBytes body)))
+          stream      (reader (ByteArrayInputStream. (. body getBytes)))
           request     (hash-map
                         :Method "POST"
                         :Request-URI "/anywhere"

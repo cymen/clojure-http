@@ -3,7 +3,7 @@
         clojure-http.method.post.post
         clojure-http.method.post.default
         clojure-http.method.post.urlencoded
-        clojure-http.request.parse))
+        clojure-http.utility.sequences))
 
 (defmethod method :POST [request-headers in]
   (let [length  (Integer/parseInt (:Content-Length request-headers))
