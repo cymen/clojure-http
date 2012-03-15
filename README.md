@@ -1,7 +1,7 @@
 clojure-http
 ------------
 
-A HTTP server that can pass this test suite:
+An HTTP server that can pass this test suite:
 
   https://github.com/8thlight/cob_spec
 
