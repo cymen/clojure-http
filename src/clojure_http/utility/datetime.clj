@@ -18,6 +18,9 @@
 (defn parse-http-datetime [datetime]
   (parse http-date-format datetime))
 
+(defn unparse-http-datetime [datetime-long]
+  (unparse http-date-format (datetime-from-long datetime-long)))
+
 (defn apache-datetime
   ([]
     (unparse apache-log-format (now)))
