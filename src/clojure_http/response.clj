@@ -6,7 +6,7 @@
   (merge
     headers-map
     {
-      :Server "clip-clop/0.2"
+      :Server "clip-clop/0.3"
       :Connection "close"
       :Date (datetime-in-gmt)
     }))
