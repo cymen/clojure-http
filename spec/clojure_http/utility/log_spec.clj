@@ -9,6 +9,6 @@
     (let [stream (ByteArrayOutputStream.)]
       (do
         (log "test123" (writer stream))
-        (should (= "test123\n" (.toString stream)))))))
+        (should= "test123\n" (.toString stream))))))
 
 (run-specs)

@@ -10,13 +10,16 @@
 (describe "method"
 
   (it "responds to a METHOD_MISSING request with 501"
-    (= (:Status-Code (method { :Method "METHOD_MISSING" :Request-URI "/" } *in*)) 501))
+    (let [response (method { :Method "METHOD_MISSING" :Request-URI "/" } *in*)]
+      (should= 501 (:Status-Code (:Status-Line response)))))
 
   (it "responds to a GET request with 200"
-    (= (:Status-Code (method { :Method "GET" :Request-URI "/" } *in*)) 200))
+    (let [response (method { :Method "GET" :Request-URI "/" } *in*)]
+      (should= 200 (:Status-Code (:Status-Line response)))))
 
   (it "responds to a HEAD request with 200"
-    (= (:Status-Code (method { :Method "HEAD" :Request-URI "/" } *in*)) 200))
+    (let [response (method { :Method "HEAD" :Request-URI "/" } *in*)]
+      (should= 200 (:Status-Code (:Status-Line response)))))
 
 )
 
