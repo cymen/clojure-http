@@ -12,7 +12,7 @@
   ^{:author "Craig McDaniel, Cymen Vig",
      :doc "Server socket library - includes REPL on socket"}
   server-socket
-  (:import (java.net InetAddress ServerSocket Socket SocketException)
+  (:import (java.net InetAddress ServerSocket Socket SocketException SocketTimeoutException)
            (java.io InputStreamReader OutputStream OutputStreamWriter PrintWriter)
            (clojure.lang LineNumberingPushbackReader))
   (:use [clojure.main :only (repl)]))
@@ -37,6 +37,8 @@
                   (try
                    (let [remote-host-address (.. s (getInetAddress) (getHostAddress))]
                      (fun ins outs remote-host-address))
+                   (catch java.net.SocketTimeoutException e
+                     nil) ; TODO figure out why this doesn't work
                    (catch SocketException e))
                   (close-socket s)
                   (dosync (commute connections disj s))))))
