@@ -20,6 +20,7 @@
           response    (method request stream)
           body        (:Body response)]
       (should= value body)))
+
 )
 
 (run-specs)

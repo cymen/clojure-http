@@ -58,6 +58,7 @@
             parsed    (parse-request stream)]
         (should= method (:Method parsed))
         (should= v ((keyword k) parsed))))
+
 )
 
 (run-specs)

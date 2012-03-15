@@ -51,6 +51,7 @@
           http-result   (run-fn-to-output-stream body)
           actual-result (read-file-to-output-stream filename)]
       (should= true (compare-output-streams actual-result http-result))))
+
 )
 
 (run-specs)
